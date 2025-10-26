@@ -1,17 +1,36 @@
 'use client'
 import Link from "next/link"
-import React from "react"
+import React, { useEffect } from "react"
 import {useRouter} from "next/navigation"
-import { axios } from "axios"
+import axios from "axios"
 
 export default function SignupPage(){
+    const router = useRouter();
     const [user, setUser] = React.useState({
         email: '',
         password: '',
         username: ''
     });
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    
+    const onSignUp = async () => {
+      try {
+        setButtonDisabled(true);
+        const response = await axios.post('/api/users/signup', user);
+        console.log('Signup successful', response.data);
+        router.push('/login');
+      } catch (error) {
+        console.log('Signup failed', error);
+      }
+    };
 
-    const onSignUp = () => {};
+    useEffect(() => {
+      if (user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
+      }
+    })
 
     return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-4">
@@ -67,9 +86,10 @@ export default function SignupPage(){
 
           <button
             onClick={onSignUp}
-            className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg shadow-md transition-all duration-300 hover:scale-[1.02]"
+            disabled={buttonDisabled}
+            className={`${buttonDisabled ? 'opacity-40': ''} mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg shadow-md transition-all duration-300 hover:scale-[1.02]`}
           >
-            Sign Up
+           Sign Up
           </button>
 
           <p className="text-center text-gray-400 text-sm mt-3">
