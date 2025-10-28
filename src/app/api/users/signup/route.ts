@@ -11,11 +11,11 @@ export async function POST(request: NextRequest) {
         const {email, password, username} = reqBody;
 
         if(!email || !password){
-            return NextResponse.json({message: 'Email and Password are required'}, {status: 400})
+            return NextResponse.json({message: 'Email and Password are required', status:400}, {status: 400})
         }
 
         const user = await User.findOne({email});
-        if(user){ return NextResponse.json({message: 'User already exists. Please login'}, {status: 400}) }
+        if(user){ return NextResponse.json({message: 'User already exists. Please login', status:400}, {status: 400}) }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -33,12 +33,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             message: 'User registered successfully',
             success: true,
-            savedUser
+            savedUser,
+            status: 200
         })
 
 
     } catch (error) {
-        console.log('Login Error:', error);
+        console.log('Signup Error:', error);
         return NextResponse.json({message: 'Internal Server Error'}, {status: 500})
     }
 }

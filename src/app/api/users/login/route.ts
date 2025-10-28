@@ -4,19 +4,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-connect()
-
 export async function POST(request: NextRequest) {
+    await connect()
     try {
         const reqBody = await request.json();
 
-        console.log(reqBody);
         const {email, password} = reqBody;
 
         if(!email || !password){
             return NextResponse.json({message: 'Email and Password are required'}, {status: 400})
         }
-
         const user = await User.findOne({email});
         if(!user){ return NextResponse.json({message: 'User Not Found. Please Sign Up'}, {status: 400}) }
 
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
         const token = await jwt.sign(tokenData, process.env.JWT_SECRET!, {expiresIn: '1d'});
 
         const responseData = NextResponse.json({
-            message : "Login Successful",
+            message : "Login Successful here..",
             success : true,
 
         });

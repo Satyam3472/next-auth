@@ -17,18 +17,17 @@ export default function LoginPage(){
         const response = await axios.post('/api/users/login', user)
         .then((response) => {
             if(response.status === 200){
-                toast.success('Login Successful');
+                console.log({response});
+                toast.success(response.data.message);
                 router.push('/profile');
             }
         })
         .catch((error) => {
-            console.error('Login failed:', error);
-            // alert('Login failed. Please check your credentials and try again.');
+            toast.error(error.response?.data?.message || 'Login failed');
         });
     };
 
     useEffect(() => {
-      toast('Welcome Back! Please Log In to Continue.');
       if(!user.email || !user.password){
         setButtonDisabled(true);
       }else{
